@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "mongofitness-backend"
+version = "0.1.0"
+description = "FastAPI backend for mongofitness app."
+authors = ["ankan <anders.retzner@gmail.com>"]
+readme = "README.md"
+packages = []
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = {extras = ["all"], version = "^0.104.1"}
+pydantic = "^2.4.2"
+uvicorn = "^0.23.2"
+pydantic-settings = "^2.0.3"
+pymongo = "^4.5.0"
+motor = "^3.3.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
