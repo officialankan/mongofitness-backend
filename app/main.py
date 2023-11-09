@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.api import steps
+from app.api.v1 import steps
 from app.db import db
 from contextlib import asynccontextmanager
 
