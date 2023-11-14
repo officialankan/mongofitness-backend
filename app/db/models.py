@@ -25,9 +25,4 @@ class BaseDBMoodel(BaseModel):
 class DailySteps(BaseDBMoodel):
     ts: datetime
     steps: int
-
-class DailyStepsDetailed(DailySteps):
-    meta: dict
-
-class DailyStepsMeta(BaseDBMoodel):
-    created: datetime
+    

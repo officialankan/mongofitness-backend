@@ -2,17 +2,22 @@ from fastapi import APIRouter, Depends
 from app.db.database_manager import DatabaseManager
 from app.db import get_database
 from app.db.models import DailySteps
-from datetime import date
 from typing import List
+from datetime import date
 
 router = APIRouter()
 
-@router.get("/{from_str}")
-async def get_daily_steps(from_str: date, to_str: date | None = None, 
-                          db: DatabaseManager = Depends(get_database)) -> DailySteps | List[DailySteps]:
-    """Get daily steps from a given date to a given date.
-    
-    If only one date is given, then the daily steps for that date is returned. Use the
-     `to_str` query parameter to get the daily steps for a range of dates.
-    """
-    return await db.get_daily_steps(from_str, to_str)
+@router.get("/")
+async def get_daily_steps(db: DatabaseManager = Depends(get_database)) -> List[DailySteps]:
+    """Get daily steps."""
+    return await db.get_daily_steps()
+
+@router.get("/{day}")
+async def get_daily_steps_by_date(day: date, db: DatabaseManager = Depends(get_database)) -> DailySteps:
+    """Get daily steps by date."""
+    return await db.get_daily_steps_by_date(day)
+
+@router.get("/range/")
+async def get_daily_steps_by_range(start: date, end: date, db: DatabaseManager = Depends(get_database)) -> List[DailySteps]:
+    """Get daily steps by date range."""
+    return await db.get_daily_steps_by_range(start, end)
