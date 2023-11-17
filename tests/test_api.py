@@ -1,9 +1,12 @@
 from fastapi.testclient import TestClient
 from app.main import app
 import pytest
+from app.conf.config import Settings
 
 @pytest.fixture(scope="module")
 def client():
+    settings = Settings()
+    assert settings.environment == "development"
     with TestClient(app) as c:
         yield c
 
