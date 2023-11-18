@@ -6,7 +6,7 @@ from app.conf.config import Settings
 @pytest.fixture(scope="module")
 def client():
     settings = Settings()
-    assert settings.environment == "development"
+    assert settings.environment == "dev"
     with TestClient(app) as c:
         yield c
 

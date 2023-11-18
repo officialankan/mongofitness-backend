@@ -20,9 +20,9 @@ class DevelopmentDatabaseSettings(DatabaseSettings):
 @lru_cache(maxsize=None)
 def get_database_settings():
     settings = Settings()
-    if settings.environment == "development":
+    if settings.environment == "dev":
         return DevelopmentDatabaseSettings()
-    elif settings.environment == "production":
+    elif settings.environment == "prod":
         return DatabaseSettings()
     else:
         raise ValueError(f"Invalid environment name ('{settings.environment}').")
