@@ -2,6 +2,8 @@ from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 from app.conf.config import get_database_settings
 from app.db.database_manager import DatabaseManager
 from datetime import datetime, date, timezone
+import pandas as pd
+import numpy as np
 import logging
 from fastapi import HTTPException
 
@@ -134,3 +136,22 @@ class MongoManager(DatabaseManager):
         if not daily_steps:
             raise HTTPException(status_code=404, detail=f"No daily steps found from {start.strftime('%Y-%m-%d')} to {end.strftime('%Y-%m-%d')}")
         return daily_steps
+    
+    async def get_longest_streak(self, limit: int):
+        logging.info(f"Getting longest streak with {limit} steps...")
+        steps = await self.get_daily_steps()
+        if not steps:
+            raise HTTPException(status_code=404, detail="No daily steps found")
+        # transform to dataframe to resample to daily and fill with nan
+        df = pd.DataFrame(steps)
+        df = df.set_index(pd.to_datetime(df["ts"]))
+        s = df["steps"].resample("1D").asfreq()
+        s = s >= limit
+
+        # https://stackoverflow.com/questions/4494404/find-large-number-of-consecutive-values-fulfilling-condition-in-a-numpy-array
+        arr = s.values
+        y = arr[1:] != arr[:-1] 
+        i = np.append(np.nonzero(y)[0], arr.size - 1)
+        rl = np.diff(np.append(-1, i))  # streak lengths
+        return np.max(rl)
+        
