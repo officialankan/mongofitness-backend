@@ -137,8 +137,8 @@ class MongoManager(DatabaseManager):
             raise HTTPException(status_code=404, detail=f"No daily steps found from {start.strftime('%Y-%m-%d')} to {end.strftime('%Y-%m-%d')}")
         return daily_steps
     
-    async def get_longest_streak(self, limit: int):
-        logging.info(f"Getting longest streak with {limit} steps...")
+    async def get_longest_streak(self, threshold: int):
+        logging.info(f"Getting longest streak with {threshold} steps...")
         steps = await self.get_daily_steps()
         if not steps:
             raise HTTPException(status_code=404, detail="No daily steps found")
@@ -146,7 +146,7 @@ class MongoManager(DatabaseManager):
         df = pd.DataFrame(steps)
         df = df.set_index(pd.to_datetime(df["ts"]))
         s = df["steps"].resample("1D").asfreq()
-        s = s >= limit
+        s = s >= threshold
 
         # https://stackoverflow.com/questions/4494404/find-large-number-of-consecutive-values-fulfilling-condition-in-a-numpy-array
         arr = s.values

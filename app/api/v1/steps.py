@@ -23,6 +23,6 @@ async def get_daily_steps_by_range(start: date, end: date, db: DatabaseManager =
     return await db.get_daily_steps_by_range(start, end)
 
 @router.get("/streak/")
-async def get_longest_streak(limit: int, db: DatabaseManager = Depends(get_database)) -> int:
-    """Get daily steps streak."""
-    return await db.get_longest_streak(limit)
+async def get_longest_streak(threshold: int, db: DatabaseManager = Depends(get_database)) -> int:
+    """Get longest daily steps streak based on a threshold."""
+    return await db.get_longest_streak(threshold)
