@@ -59,3 +59,12 @@ def test_get_daily_steps_by_range(client):
     for item in response.json():
         assert "ts" in item
         assert "steps" in item
+
+def test_get_longest_streak(client):
+    response = client.get("/api/v1/steps/streak/?limit=0")
+    assert response.status_code == 200
+    assert response.headers["content-type"] == "application/json"
+    assert type(response.json()) == int
+    steps = client.get("/api/v1/steps/").json()
+    assert response.json() == len(steps)
+    
