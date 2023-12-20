@@ -153,5 +153,6 @@ class MongoManager(DatabaseManager):
         y = arr[1:] != arr[:-1] 
         i = np.append(np.nonzero(y)[0], arr.size - 1)
         rl = np.diff(np.append(-1, i))  # streak lengths
-        return np.max(rl)
+        pos = np.cumsum(np.append(0, rl))[:-1]  # positions
+        return np.max(rl * arr[pos].T)  # only look at True streaks
         
