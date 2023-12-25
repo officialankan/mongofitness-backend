@@ -61,7 +61,7 @@ def test_get_daily_steps_by_range(client):
         assert "steps" in item
 
 def test_get_longest_streak(client):
-    response = client.get("/api/v1/steps/streak/?limit=0")
+    response = client.get("/api/v1/steps/streak/?threshold=0")
     assert response.status_code == 200
     assert response.headers["content-type"] == "application/json"
     assert type(response.json()) == int
