@@ -7,7 +7,7 @@ from contextlib import asynccontextmanager
 origins = [
     "http://localhost:3000",
     "http://172.18.60.111:3000",
-    "http://217.215.72.185",
+    "http://217.215.72.185:5173",
     "https://ankan-web.vercel.app"
 ]
 
