@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api.v1 import steps
+from app.api.v1 import steps, activities
 from app.db import db
 from contextlib import asynccontextmanager
 
@@ -28,3 +28,4 @@ app.add_middleware(
 )
 
 app.include_router(steps.router, prefix="/api/v1/steps", tags=["steps"])
+app.include_router(activities.router, prefix="/api/v1/activities", tags=["activities"])

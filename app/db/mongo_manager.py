@@ -1,7 +1,7 @@
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 from app.conf.config import get_database_settings
 from app.db.database_manager import DatabaseManager
-from datetime import datetime, date, timezone
+from datetime import datetime, date, timezone, timedelta
 import pandas as pd
 import numpy as np
 import logging
@@ -28,7 +28,7 @@ class MongoManager(DatabaseManager):
     
     async def get_daily_steps(self):
         logging.info("Getting daily steps...")
-        cursor = self.db[db_settings.collection].aggregate([
+        cursor = self.db["polar"].aggregate([
             {
                 '$sort': {
                     'steps': -1
@@ -65,7 +65,7 @@ class MongoManager(DatabaseManager):
 
     async def get_daily_steps_by_date(self, day: date):
         logging.info("Getting daily steps for {date.strftime('%Y-%m-%d')}...")
-        cursor = self.db[db_settings.collection].aggregate([
+        cursor = self.db["polar"].aggregate([
                 {
                     "$match": {
                         "ts": datetime(day.year, day.month, day=day.day, tzinfo=timezone.utc)
@@ -94,7 +94,7 @@ class MongoManager(DatabaseManager):
 
     async def get_daily_steps_by_range(self, start: date, end: date):
         logging.info(f"Getting daily steps from {start.strftime('%Y-%m-%d')} to {end.strftime('%Y-%m-%d')}...")
-        cursor = self.db[db_settings.collection].aggregate([
+        cursor = self.db["polar"].aggregate([
             {
                 '$match': {
                     'ts': {
@@ -156,3 +156,26 @@ class MongoManager(DatabaseManager):
         pos = np.cumsum(np.append(0, rl))[:-1]  # positions
         return np.max(rl * arr[pos].T)  # only look at True streaks
         
+    async def get_activity_type_by_date(self, day: date):
+        logging.info(f"Getting activity type(s) for {day.strftime('%Y-%m-%d')}...")
+        tomorrow = day + timedelta(days=1)
+        cursor = self.db["strava"].aggregate([
+            {
+                "$match": {
+                    "start_date": {
+                        "$gte": datetime(day.year, day.month, day.day, tzinfo=timezone.utc), 
+                        "$lt": datetime(tomorrow.year, tomorrow.month, tomorrow.day, tzinfo=timezone.utc)
+                    }
+                }
+            }, 
+            {
+                "$project": {
+                    "_id": 0, 
+                    "sport_type": 1
+                }
+            }
+        ])
+        activity_types = await cursor.to_list(length=None)
+        if not activity_types:
+            raise HTTPException(status_code=404, detail=f"No activities found for {day.strftime('%Y-%m-%d')}")
+        return activity_types
