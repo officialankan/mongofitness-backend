@@ -5,9 +5,7 @@ from app.db import db
 from contextlib import asynccontextmanager
 
 origins = [
-    "http://localhost:3000",
-    "http://172.18.60.111:3000",
-    "http://217.215.72.185:5173",
+    "http://127.0.0.1:5173",
     "https://ankan-web.vercel.app"
 ]
 
