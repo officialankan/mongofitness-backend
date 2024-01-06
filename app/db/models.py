@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import List
 from bson import ObjectId
 from pydantic import BaseModel
 from datetime import datetime
@@ -78,5 +79,6 @@ class SportType(str, Enum):
     Workout = "Workout"
     Yoga = "Yoga"
 
-class ActivityType(BaseDBMoodel):
-    sport_type: SportType
+class ActivityTypeByDate(BaseDBMoodel):
+    ts: datetime
+    sport_type: List[SportType]

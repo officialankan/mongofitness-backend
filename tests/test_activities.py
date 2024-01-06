@@ -7,10 +7,11 @@ def client():
     with TestClient(app) as c:
         yield c
 
-def test_get_activity_type_by_date(client):
-    response = client.get("/api/v1/activities/type/date/2024-01-04")
+def test_get_activity_type_by_date_range(client):
+    response = client.get("/api/v1/activities/type/range/?start=2023-12-20&end=2024-01-06")
     assert response.status_code == 200
-    assert response.headers["content-type"] == "application/json"
+    assert len(response.json()) > 0
     assert type(response.json()) == list
+    assert type(response.json()[0]) == dict
+    assert "ts" in response.json()[0]
     assert "sport_type" in response.json()[0]
-    assert response.json()[0]["sport_type"] == "VirtualRide"
