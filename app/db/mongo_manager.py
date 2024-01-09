@@ -172,7 +172,7 @@ class MongoManager(DatabaseManager):
                     '_id': {
                         '$dayOfYear': '$start_date'
                     }, 
-                    'ts': {
+                    'dt': {
                         '$first': '$start_date'
                     }, 
                     'sport_type': {
@@ -182,7 +182,21 @@ class MongoManager(DatabaseManager):
             }, 
             {
                 '$project': {
-                    '_id': 0
+                    '_id': 0, 
+                    'ts': {
+                        '$dateFromParts': {
+                            'year': {
+                                '$year': '$dt'
+                            }, 
+                            'month': {
+                                '$month': '$dt'
+                            }, 
+                            'day': {
+                                '$dayOfMonth': '$dt'
+                            }
+                        }
+                    }, 
+                    'sport_type': 1
                 }
             }, 
             {
